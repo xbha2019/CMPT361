@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<button id = "ButtonX">Look Right</button>
+<button id = "ButtonY">Look Lefte</button>
+
+
+
+
+<script id="vertex-shader" type="x-shader/x-vertex">
+varying vec3 R;
+attribute vec4 vPosition;
+attribute vec4 vNormal;
+uniform mat4 modelViewMatrix;
+uniform mat4 projectionMatrix;
+uniform mat3 normalMatrix;
+varying  vec3 fTexCoord;
+
+void main()
+{
+  
+    gl_Position = projectionMatrix*modelViewMatrix*vPosition;
+    //gl_Position = projectionMatrix*modelViewMatrix*gl_Position;
+	vec3 eyePos  = (modelViewMatrix*vPosition).xyz;
+    vec3 N = normalize(normalMatrix*vNormal.xyz);
+    //vec3 N = normalMatrix*vNormal.xyz;
+    
+    R = reflect(eyePos, N);
+   
+   
+}
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+precision mediump float;
+varying vec3 R;
+uniform samplerCube texMap;
+varying vec3 fTexCoord;
+void main()
+{
+    vec4 texColor = textureCube(texMap, R);
+    gl_FragColor = texColor;
+}
+</script>
+
+<script type="text/javascript" src="../Common/webgl-utils.js"></script>
+<script type="text/javascript" src="../Common/initShaders.js"></script>
+<script type="text/javascript" src="../Common/MV.js"></script>
+<script type="text/javascript" src="myScene.js"></script>
+
+<body>
+<canvas id="gl-canvas" width="600" height="600">
+Oops ... your browser doesn't support the HTML5 canvas element
+</canvas>
+</body>
+</html>
